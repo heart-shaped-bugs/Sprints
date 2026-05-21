@@ -380,21 +380,21 @@ class Echidna:
             "baby_weight_g": self.baby_weight * 1000,
         }
     
-    def detect_prey_by_electric_field(self, depth_cm: float):
+    def detect_prey_by_electric_field(self, depth_cm: float, electric_field_strength: float):
         if not self.alive:
             raise ValueError("Ехидна мертва")
         if self.burrowing or self.state in ['torpor', 'hibernation']:
-            return {"detected": False, "prey_type": None, "distance_mm": None}
+            return {"detected": False, "prey_type": "", "distance_mm": 0.0}
         if depth_cm < 0:
-            raise ValueError("Глубина не может быть отрицательной")
-        if depth_cm > 15 or self.field_strength_mVcm < 1.8:
-            return {"detected": False, "prey_type": None, "distance_mm": None}
+            return {"detected": False, "prey_type": "", "distance_mm": 0.0}
+        if depth_cm > 15 or electric_field_strength < 1.8:
+            return {"detected": False, "prey_type": "", "distance_mm": 0.0}
         probability = min(1.0, self.electroreceptor_count / 2000)
         if random.random() < probability:
             return {
-            "detected": True,
-            "prey_type": random.choice(["ants", "termites", "worms"]),
-            "distance_mm": depth_cm * 10
+                "detected": True,
+                "prey_type": random.choice(["ant", "worm", "termite"]),
+                "distance_mm": depth_cm * 10
             }
         else:
-            return {"detected": False, "prey_type": None, "distance_mm": None}
+            return {"detected": False, "prey_type": "", "distance_mm": 0.0}
